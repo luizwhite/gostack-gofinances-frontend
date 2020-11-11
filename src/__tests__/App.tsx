@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable no-multi-str */
 /* eslint-disable import/first */
 
 jest.mock('../utils/formatValue.ts', () => ({
@@ -22,16 +22,17 @@ jest.mock('../utils/formatValue.ts', () => ({
 }));
 
 import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react';
+import { render, fireEvent, act, screen } from '@testing-library/react';
 import MockAdapter from 'axios-mock-adapter';
 import api from '../services/api';
 import App from '../App';
 
 const apiMock = new MockAdapter(api);
+// import { apiMock } from '../utils/mockAdapter.js';
 
-const wait = (amount = 0): Promise<void> => {
-  return new Promise((resolve) => setTimeout(resolve, amount));
-};
+const wait = (amount = 0): Promise<void> =>
+  // eslint-disable-next-line implicit-arrow-linebreak
+  new Promise((resolve) => setTimeout(resolve, amount));
 
 const actWait = async (amount = 0): Promise<void> => {
   await act(async () => {
@@ -42,6 +43,8 @@ const actWait = async (amount = 0): Promise<void> => {
 describe('Dashboard', () => {
   it('should be able to list the total balance inside the cards', async () => {
     const { getByTestId } = render(<App />);
+
+    // console.log(apiMock.axiosInstance.defaults);
 
     apiMock.onGet('transactions').reply(200, {
       transactions: [
@@ -97,6 +100,11 @@ describe('Dashboard', () => {
         total: 5950,
       },
     });
+
+    /* api
+    .get('transactions')
+    .then((response) => console.log('response', response))
+    .catch((error) => console.log('error', error)); */
 
     await actWait();
 
@@ -209,14 +217,10 @@ describe('Dashboard', () => {
         Ice cream, outcome, 3, Food',
       ],
       'import.csv',
-      {
-        type: 'text/csv',
-      },
+      { type: 'text/csv' },
     );
 
-    Object.defineProperty(input, 'files', {
-      value: [file],
-    });
+    Object.defineProperty(input, 'files', { value: [file] });
 
     fireEvent.change(input);
 

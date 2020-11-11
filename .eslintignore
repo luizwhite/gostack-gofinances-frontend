@@ -1,3 +1,5 @@
 **/*.js
 node_modules
 build
+# __tests__
+src/components/Upload
